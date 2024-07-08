@@ -371,7 +371,7 @@ class CdnFeedHelper:
             redirect_depth += 1
 
         if resp.status_code != 200:
-            CdnFeedHelper._LOGGER.warning("Couldn't resolve redirect!")
+            CdnFeedHelper._LOGGER.warning(f"Couldn't resolve redirect. Status code: {resp.status_code}")
 
         url = resp.url
         CdnFeedHelper._LOGGER.debug("Fetched external url for {}: {}".format(
