@@ -317,7 +317,8 @@ class AudioKeyManager(PacketsReceiver, Closeable):
 
 class CdnFeedHelper:
     _LOGGER: logging = logging.getLogger(__name__)
-    MAX_REDIRECT_DEPTH = 10
+    # A realistic value observed in production due to the insane number of tracking redirects for certain podcasts.
+    MAX_REDIRECT_DEPTH = 15
 
     @staticmethod
     def get_url(resp: StorageResolve.StorageResolveResponse) -> str:
