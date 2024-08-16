@@ -317,7 +317,7 @@ class AudioKeyManager(PacketsReceiver, Closeable):
 
 class CdnFeedHelper:
     _LOGGER: logging = logging.getLogger(__name__)
-    MAX_REDIRECT_DEPTH = 5
+    MAX_REDIRECT_DEPTH = 10
 
     @staticmethod
     def get_url(resp: StorageResolve.StorageResolveResponse) -> str:
@@ -363,7 +363,7 @@ class CdnFeedHelper:
         redirect_depth = 0
         while resp.status_code == 302:
             if redirect_depth > CdnFeedHelper.MAX_REDIRECT_DEPTH:
-                raise FeederException(f"Too many redirects")
+                raise FeederException(f"Too many redirects, latest url: {resp.url}")
             url = resp.headers.get("location")
             CdnFeedHelper._LOGGER.debug("Redirected to {}".format(url))
             resp = session.client().head(url)
