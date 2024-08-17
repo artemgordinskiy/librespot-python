@@ -736,6 +736,16 @@ class NormalizationData:
         return normalisation_factor
 
 
+class ExternalUrlException(Exception):
+
+    def __init__(self, url: str, *args):
+        self.url = url
+        super().__init__(*args)
+
+    def get_url(self) -> str:
+        return self.url
+
+
 class PlayableContentFeeder:
     logger = logging.getLogger("Librespot:PlayableContentFeeder")
     storage_resolve_interactive = "/storage-resolve/files/audio/interactive/{}"
@@ -783,8 +793,8 @@ class PlayableContentFeeder:
                      halt_listener: HaltListener) -> LoadedStream:
         episode = self.__session.api().get_metadata_4_episode(episode_id)
         if episode.external_url:
-            return CdnFeedHelper.load_episode_external(self.__session, episode,
-                                                       halt_listener)
+            # Don't try to load external episodes ourselves. It's done better externally.
+            raise ExternalUrlException(episode.external_url)
         file = audio_quality_picker.get_file(episode.audio)
         if file is None:
             self.logger.fatal(
